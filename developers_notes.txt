@@ -1,0 +1,470 @@
+Raw notes for to help with environments, eventually to be organized and put
+into a Wiki.
+
+When adding to this, please use your call sign indicates content that is
+unique to your development.
+
+Development on Windows is new to wb8tyw as is these new GUI tool kits.
+
+The idea for this file is to collect information as it happens so that it
+does not get lost later.   And in a home environment, we don't usually have
+freshly installed test test systems to verify installation issues.
+
+Ideally we want an single package with an ".msi" file for a Microsoft
+Windows environment.   We know from the lzhuf project how to create
+Microsoft packages and also debian packages, and we can create them with
+GitHub Actions.
+
+Cygwin and MobaXterm allow access to your Microsoft Windows storage by using
+the path /cygwin.
+
+This allows you to both use bash shell to for git operations and you can
+also test the many of the linux code paths.
+
+Msys2 and using a WSL have a similar way to get to the Microsoft Windows
+volumes.   Todo is to document these alternate methods.
+
+In the case for wb8tyw, it is /cygwin/w/work/d-rats/drats2 .
+This is a linux system that shares the work directory to all the test
+and development systems over both CIFS/SMB and NFS, so wb8tyw use that linux
+system for git and docker operations.
+
+A developer will start with creating a clone of the ham-radio-software drats2
+repository in their local repository.
+
+You will need to get your ~/.gitconfig file setup at a minimum of your name,
+email, and your preferred editor.   Some versions of git will issue noisy
+messages if you do not specify the [push] section.
+
+cat ~/.gitconfig
+[user]
+        email = wb8tyw@example.net
+        name = John E. Malmberg
+[core]
+        editor = vim
+[push]
+        default=simple
+
+
+The forked repository configuration needs an upstream entry
+
+cat .git/config
+[core]
+        repositoryformatversion = 0
+        filemode = true
+        bare = false
+        logallrefupdates = true
+[remote "origin"]
+        url = git@github.com:wb8tyw/drats2.git
+        fetch = +refs/heads/*:refs/remotes/origin/*
+[remote "upstream"]
+        url = git@github.com:ham-radio-software/drats2.git
+        fetch = +refs/heads/*:refs/remotes/upstream/*
+[branch "main"]
+        remote = origin
+        merge = refs/heads/main
+
+Now getting up to date with current branch.
+
+
+You want to start and keep your fork up to date with the upstream.
+
+Updating your main branch.
+
+git checkout main
+
+git fetch upstream
+From github.com:ham-radio-software/drats2
+ * [new branch]      main       -> upstream/main
+
+git reset --hard upstream/main
+HEAD is now at a69c2e6 Setup initial project structure (#1)
+
+Now if you have a development branch in progress that has not yet been
+submitted as a Pull Request (PR), you can bring it up to date with a rebase
+
+git branch
+* main
+  wb8tyw_initial_template
+
+git checkout wb8tyw_initial_template
+Your branch is up to date with 'origin/wb8tyw_initial_template'.
+
+git rebase -i main
+This will normally bring up an edit window window that will allow you to
+select which commits from the updated main you want to pull into your branch.
+It may point out conflicts that are blocking the merge, and then you will
+need to edit the files.  The files in conflict will have both the original
+and the new main versions in them.   Resolve the conflicts, and do a normal
+commit.   Then follow the rebase prompts to continue the rebase.
+
+Then if you need to update your existing online git repository branch:
+
+git push -f
+
+Instead of:
+
+git push -u origin <branch_name>
+
+As is normally done.
+
+If you have a pull request in progress, then then what you need to is a
+merge of the main branch into the test branch.
+
+git merge --ff-only main
+
+There is a lot of information on Internet about git, but in the worst case
+you can just cancel the PR and start a new PR keeping track of what changes
+you had in progress.
+
+Once the PR is merged, normally the branch in your online git repository
+is deleted.
+
+You need to delete your local branch.
+
+git checkout main
+git branch -d <your_local_branch>
+
+
+Now we want to have an install script for installing Python and the
+dependencies for each type of install.
+
+install_windows.ps1 is for installing what is needed to run d-rats on windows.
+This script should not be run from an command window with Administrative
+privileges.  It may pop up UAC windows for some operations.
+
+Trying to run the script from a power shell window fails as running scripts
+is disabled by policy.
+
+PS C:\Users\malmberg> w:\work\d-rats\drats2\install_windows.ps1
+w:\work\d-rats\drats2\install_windows.ps1 :
+ File W:\work\d-rats\drats2\install_windows.ps1 cannot be loaded because
+running scripts is disabled on this system. For more information,
+ see about_Execution_Policies at
+https:/go.microsoft.com/fwlink/?LinkID=135170.
+At line:1 char:1
++ w:\work\d-rats\drats2\install_windows.ps1
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : SecurityError: (:) [], PSSecurityException
+    + FullyQualifiedErrorId : UnauthorizedAccess
+
+Using the Visual Studio Code Microsoft Powershell plugin execution window, it
+was able to run the script, but has prompts.
+
+PS W:\work\d-rats\drats2> .\install_windows.ps1
+The `msstore` source requires that you view the following agreements before
+ using.
+Terms of Transaction: https://aka.ms/microsoft-store-terms-of-transaction
+The source requires the current machine's 2-letter geographic region to be
+ sent to the backend service to function properly (ex. "US").
+
+Do you agree to all the source agreements terms?
+[Y] Yes  [N] No: Y
+Found Python 3.11 [9NRWMJP3717K] Version Unknown
+This package is provided through Microsoft Store. winget may need to acquire
+ the package from Microsoft Store on behalf of the current user.
+Agreements for Python 3.11 [9NRWMJP3717K] Version Unknown
+Version: Unknown
+Publisher: Python Software Foundation
+Publisher Url: https://www.python.org/
+Publisher Support Url: https://www.python.org/doc/
+License: https://docs.python.org/3.11/license.html
+Privacy Url: https://www.python.org/privacy
+Copyright: (c) Python Software Foundation
+Agreements:
+  Category: Developer tools
+  Pricing: Free
+  Free Trial: No
+  Terms of Transaction: https://aka.ms/microsoft-store-terms-of-transaction
+  Seizure Warning: https://aka.ms/microsoft-store-seizure-warning
+  Store License Terms: https://aka.ms/microsoft-store-license
+
+The publisher requires that you view the above information and accept the
+ agreements before installing.
+Do you agree to the terms?
+[Y] Yes  [N] No: Y
+Starting package install...
+  ██████████████████████████████  100%
+Successfully installed
+Collecting kivy (from -r W:\work\d-rats\drats2\windows\requirements.txt
+ (line 3))
+  Downloading Kivy-2.3.1-cp311-cp311-win_amd64.whl.metadata (14 kB)
+Collecting wxPython (from -r W:\work\d-rats\drats2\windows\requirements.txt
+ (line 5))
+  Downloading wxPython-4.2.2-cp311-cp311-win_amd64.whl.metadata (3.1 kB)
+Collecting Kivy-Garden>=0.1.4 (from kivy->-r
+ W:\work\d-rats\drats2\windows\requirements.txt (line 3))
+  Downloading Kivy_Garden-0.1.5-py3-none-any.whl.metadata (159 bytes)
+Collecting docutils (from kivy->-r
+ W:\work\d-rats\drats2\windows\requirements.txt (line 3))
+  Downloading docutils-0.21.2-py3-none-any.whl.metadata (2.8 kB)
+Collecting pygments (from kivy->-r
+ W:\work\d-rats\drats2\windows\requirements.txt (line 3))
+  Downloading pygments-2.19.1-py3-none-any.whl.metadata (2.5 kB)
+Collecting requests (from kivy->-r
+ W:\work\d-rats\drats2\windows\requirements.txt (line 3))
+  Downloading requests-2.32.3-py3-none-any.whl.metadata (4.6 kB)
+Collecting filetype (from kivy->-r
+ W:\work\d-rats\drats2\windows\requirements.txt (line 3))
+  Downloading filetype-1.2.0-py2.py3-none-any.whl.metadata (6.5 kB)
+Collecting kivy-deps.angle~=0.4.0 (from kivy->-r
+ W:\work\d-rats\drats2\windows\requirements.txt (line 3))
+  Downloading kivy_deps.angle-0.4.0-cp311-cp311-win_amd64.whl.metadata
+   (206 bytes)
+Collecting kivy-deps.sdl2~=0.8.0 (from kivy->-r
+ W:\work\d-rats\drats2\windows\requirements.txt (line 3))
+  Downloading kivy_deps.sdl2-0.8.0-cp311-cp311-win_amd64.whl.metadata
+   (238 bytes)
+Collecting kivy-deps.glew~=0.3.1 (from kivy->-r
+ W:\work\d-rats\drats2\windows\requirements.txt (line 3))
+  Downloading kivy_deps.glew-0.3.1-cp311-cp311-win_amd64.whl.metadata
+   (205 bytes)
+Collecting pypiwin32 (from kivy->-r
+ W:\work\d-rats\drats2\windows\requirements.txt (line 3))
+  Downloading pypiwin32-223-py3-none-any.whl.metadata (236 bytes)
+Collecting six (from wxPython->-r
+ W:\work\d-rats\drats2\windows\requirements.txt (line 5))
+  Downloading six-1.17.0-py2.py3-none-any.whl.metadata (1.7 kB)
+Collecting numpy (from wxPython->-r
+ W:\work\d-rats\drats2\windows\requirements.txt (line 5))
+  Downloading numpy-2.2.1-cp311-cp311-win_amd64.whl.metadata (60 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 60.8/60.8 kB ? eta 0:00:00
+Collecting pywin32>=223 (from pypiwin32->kivy->-r
+ W:\work\d-rats\drats2\windows\requirements.txt (line 3))
+  Downloading pywin32-308-cp311-cp311-win_amd64.whl.metadata (8.3 kB)
+Collecting charset-normalizer<4,>=2 (from requests->kivy->-r
+ W:\work\d-rats\drats2\windows\requirements.txt (line 3))
+  Downloading charset_normalizer-3.4.1-cp311-cp311-win_amd64.whl.metadata
+   (36 kB)
+Collecting idna<4,>=2.5 (from requests->kivy->-r
+ W:\work\d-rats\drats2\windows\requirements.txt (line 3))
+  Downloading idna-3.10-py3-none-any.whl.metadata (10 kB)
+Collecting urllib3<3,>=1.21.1 (from requests->kivy->-r
+ W:\work\d-rats\drats2\windows\requirements.txt (line 3))
+  Downloading urllib3-2.3.0-py3-none-any.whl.metadata (6.5 kB)
+Collecting certifi>=2017.4.17 (from requests->kivy->-r
+ W:\work\d-rats\drats2\windows\requirements.txt (line 3))
+  Downloading certifi-2024.12.14-py3-none-any.whl.metadata (2.3 kB)
+Downloading Kivy-2.3.1-cp311-cp311-win_amd64.whl (4.6 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 4.6/4.6 MB 10.9 MB/s eta 0:00:00
+Downloading wxPython-4.2.2-cp311-cp311-win_amd64.whl (16.4 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 16.4/16.4 MB 11.3 MB/s eta 0:00:00
+Downloading kivy_deps.angle-0.4.0-cp311-cp311-win_amd64.whl (5.1 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 5.1/5.1 MB 11.3 MB/s eta 0:00:00
+Downloading kivy_deps.glew-0.3.1-cp311-cp311-win_amd64.whl (123 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 123.6/123.6 kB ? eta 0:00:00
+Downloading kivy_deps.sdl2-0.8.0-cp311-cp311-win_amd64.whl (4.2 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 4.2/4.2 MB 11.6 MB/s eta 0:00:00
+Downloading Kivy_Garden-0.1.5-py3-none-any.whl (4.6 kB)
+Downloading docutils-0.21.2-py3-none-any.whl (587 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 587.4/587.4 kB 12.3 MB/s
+    eta 0:00:00
+Downloading filetype-1.2.0-py2.py3-none-any.whl (19 kB)
+Downloading numpy-2.2.1-cp311-cp311-win_amd64.whl (12.9 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 12.9/12.9 MB 11.3 MB/s eta 0:00:00
+Downloading pygments-2.19.1-py3-none-any.whl (1.2 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.2/1.2 MB 11.0 MB/s eta 0:00:00
+Downloading pypiwin32-223-py3-none-any.whl (1.7 kB)
+Downloading requests-2.32.3-py3-none-any.whl (64 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 64.9/64.9 kB ? eta 0:00:00
+Downloading six-1.17.0-py2.py3-none-any.whl (11 kB)
+Downloading certifi-2024.12.14-py3-none-any.whl (164 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 164.9/164.9 kB 9.7 MB/s eta 0:00:00
+Downloading charset_normalizer-3.4.1-cp311-cp311-win_amd64.whl (102 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 102.4/102.4 kB ? eta 0:00:00
+Downloading idna-3.10-py3-none-any.whl (70 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 70.4/70.4 kB ? eta 0:00:00
+Downloading pywin32-308-cp311-cp311-win_amd64.whl (6.6 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 6.6/6.6 MB 11.6 MB/s eta 0:00:00
+Downloading urllib3-2.3.0-py3-none-any.whl (128 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 128.4/128.4 kB 7.4 MB/s eta 0:00:00
+Installing collected packages: pywin32, kivy-deps.sdl2, kivy-deps.glew,
+ kivy-deps.angle, filetype, urllib3, six, pypiwin32, pygments, numpy, idna,
+ docutils, charset-normalizer, certifi, wxPython, requests, Kivy-Garden, kivy
+  WARNING: The script filetype.exe is installed in
+   'C:\Users\malmberg\AppData\Local\Packages\
+   PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\
+   local-packages\Python311\Scripts' which is not on PATH.
+  Consider adding this directory to PATH or, if you prefer to suppress
+   this warning, use --no-warn-script-location.
+  WARNING: The script pygmentize.exe is installed in
+   'C:\Users\malmberg\AppData\Local\Packages\
+   PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\
+   local-packages\Python311\Scripts' which is not on PATH.
+  Consider adding this directory to PATH or, if you prefer to suppress
+   this warning, use --no-warn-script-location.
+  WARNING: The scripts f2py.exe and numpy-config.exe are installed in
+   'C:\Users\malmberg\AppData\Local\Packages\
+   PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\
+   local-packages\Python311\Scripts' which is not on PATH.
+  Consider adding this directory to PATH or, if you prefer to suppress
+   this warning, use --no-warn-script-location.
+  WARNING: The scripts docutils.exe, rst2html.exe, rst2html4.exe,
+   rst2html5.exe, rst2latex.exe, rst2man.exe, rst2odt.exe, rst2pseudoxml.exe,
+   rst2s5.exe, rst2xetex.exe and rst2xml.exe are installed in
+    'C:\Users\malmberg\AppData\Local\Packages\
+    PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\
+    local-packages\Python311\Scripts' which is not on PATH.
+  Consider adding this directory to PATH or, if you prefer to suppress
+   this warning, use --no-warn-script-location.
+  WARNING: The script normalizer.exe is installed in
+   'C:\Users\malmberg\AppData\Local\Packages\
+   PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\
+   local-packages\Python311\Scripts' which is not on PATH.
+  Consider adding this directory to PATH or, if you prefer to suppress
+   this warning, use --no-warn-script-location.
+  WARNING: The scripts helpviewer.exe, img2png.exe, img2py.exe, img2xpm.exe,
+   pycrust.exe, pyshell.exe, pyslices.exe, pyslicesshell.exe, pywxrc.exe,
+   wxdemo.exe, wxdocs.exe and wxget.exe are installed in
+    'C:\Users\malmberg\AppData\Local\Packages\
+    PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\
+    local-packages\Python311\Scripts' which is not on PATH.
+  Consider adding this directory to PATH or, if you prefer to suppress
+   this warning, use --no-warn-script-location.
+Successfully installed Kivy-Garden-0.1.5 certifi-2024.12.14
+ charset-normalizer-3.4.1 docutils-0.21.2 filetype-1.2.0 idna-3.10
+ kivy-2.3.1 kivy-deps.angle-0.4.0 kivy-deps.glew-0.3.1
+ kivy-deps.sdl2-0.8.0 numpy-2.2.1 pygments-2.19.1 pypiwin32-223 pywin32-308
+ requests-2.32.3 six-1.17.0 urllib3-2.3.0 wxPython-4.2.2
+
+[notice] A new release of pip is available: 24.0 -> 24.3.1
+[notice] To update, run:
+ C:\Users\malmberg\AppData\Local\Microsoft\WindowsApps\
+ PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\python.exe -m pip
+  install --upgrade pip
+
+It was supposed to install the latest version of Python from the Microsoft
+store which was Python 3.13 instead of the Python 3.11 it did install.
+
+We could specify the python version in the script, but that becomes a
+maintenance problem when it gets missed when that version is obsolete.
+python 3.11 should be good enough for our testing though.
+
+
+
+install_mobaxterm.sh is for installing what is needed to run d-rats on
+MobaXterm.
+
+install_linux.sh is for installing what is needed to run d-rats on various
+linux platforms.
+
+We will have different requirements.txt files for pip based on which
+platform, etcetera.  Various security tools look for requirements.txt to
+flag if an known unsafe package is listed, so we will put each
+requirements.txt in their own directory instead making requirements_xxx.txt
+files.
+
+Visual Studio Code notes:
+On detecting a ps1 file, VSC will prompt to install the "Powershell" from
+Microsoft extension.   When installed, the plugin will ask you to upgrade to
+most current Powershell.   Wb8tyw declined the upgrade to be more compatible
+with end users.
+
+Testing the scripts:
+
+Test system1:  Windows-11
+  Currently using as a development system.
+  Testing for using Windows Python.
+  Testing using MobaXterm Free edition.
+
+Test system2:  Windows-10
+  Testing Msys2 using VNC from test system1
+
+Test system3:  Raspbian (Debian Bookworm)
+  Testing via X11/SSH tunneling from test system1
+
+Test system4:  Fedora/41
+  Testing via X11/SSH tunneling from test system1
+
+Test system5:  Ubuntu 22.04
+  Testing via X11/SSH tunneling from test system1
+
+No audio available when testing remote.
+
+The working directory was set to the git checkout directory.
+
+Native Windows used Visual Studio code to run ./install_windows.ps1.
+At this time, only the packages needed for testing the various gui packages
+are being installed.   This seems to work as reported by pip freeze.
+
+Mobaxterm test:
+First problem: the cygwin environment is checking the UID/GID of the served
+file system and determined that it does not have permission.
+
+Issued in Mobaxterm
+mkpasswd --local > /etc/passwd
+mkgroup --local > /etc/group
+
+For wb8tyw the remote uid/gid: 4294967295 4294967295
+
+For the /etc/group wb8tyw added a record to copy the group "USER"
+
+Users:S-1-5-32-545:545:
+Users2:S-1-5-32-545:4294967295:
+
+A similar edit was made to the /edt/passwd file, the first field is the
+posix username, and the 3rd and 4th are uid and gid values.   Everything
+else needs to be the same.
+
+malmberg:*:197611:197121:U-direwolf\malmberg,...
+
+malmberg2:*:4294967295:4294967295:U-direwolf\malmberg,...
+
+But that only fixed the names in the ls -l display, it did not fix the
+permissions issue.  So this appears to only be needed for cosmetic reasons,
+so probably was not needed at all.
+
+The permissions on new files in Visual Studio code defaults to 0744 and
+since Cygwin/MobaXterm still sees this as a different user and group, it
+does not work.   Changing the permissions in the MobaXterm session do not
+work as it does not have permissions.
+
+The changes need to be made on the SMB/CIFS/NFS server host.
+chmod 0755 *.sh
+
+That got the linux_install.sh script working and makes sure that when
+these files get committed to git they will have the correct permissions.
+
+The kivy package did not install on cygwin/MobaXterm no matter what I
+tried.
+
+For some tests, On some systems you have to use python3 <program_name> to
+run the test program.
+These are all minimal programs, most just putting up a window that exits
+when it is closed.
+
+Results of hello_world_gtk.py test:
+   Native Windows: Detects no GTK available
+   MSYS2: GTK4 pauses and generates floods of what looks like useless
+          diagnostic dumps.
+          Now detects MSYS2 and falls back to GTK3
+   MobaXterm: GTK4 demonstration works with an annoying diagnostic.
+          (hello_world_gtk.py:3325): GLib-GIO-CRITICAL **:
+           g_dbus_proxy_new_sync: assertion
+          'G_IS_DBUS_CONNECTION (connection)' failed
+   Ubuntu 22.04: GTK4 demonstration works.
+   Raspbian Bookworm: GTK4 demonstration works.
+   Fedora 41: GTK4 demonstration works with annoying diagnostics.
+    libEGL warning: DRI3: Screen seems not DRI3 capable
+    libEGL warning: DRI3: Screen seems not DRI3 capable
+    MESA-INTEL: warning: ../src/intel/vulkan/anv_formats.c:763:
+     FINISHME: support YUV colorspace with DRM format modifiers
+    MESA-INTEL: warning: ../src/intel/vulkan/anv_formats.c:794:
+     FINISHME: support more multi-planar formats with DRM modifiers
+    vulkan: No DRI3 support detected - required for presentation
+    Note: you can probably enable DRI3 in your Xorg config
+
+Result of Kivy test:
+    Native Windows: Kivy demonstration worked with a bunch of diagnostics.
+    MSYS2: Detected Kivy not available.
+    MobaXterm: Detected Kivy not available.
+    Ubuntu 22.04: Kivy demonstration worked with a bunch of diagnostics.
+    Raspbian Bookworm: Kivy demonstration worked with a bunch of diagnostics.
+    Fedora 41: Needed PYTHONPATH, Kivy demonstration worked with a bunch
+      of diagnostics.
+
+Results of Tkinter tests: Success on all of the above systems.
+
+Results of the WxPython tests:  Success on all the above systems, with a
+a diagnostic on MobaXterm run.   A web search indicates that diagnostic can be
+fixed with a series of commands.

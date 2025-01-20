@@ -2,11 +2,11 @@
 # We are getting flooded with these and they are very low on
 # the priority of things to fix.
 # some of these are not detected by older pylint versions in use.
-disable = consider-using-f-string,
-  consider-using-dict-items,
-  consider-iterating-dictionary,
-  consider-using-with,
-  unspecified-encoding
+#disable = consider-using-f-string,
+#  consider-using-dict-items,
+#  consider-iterating-dictionary,
+#  consider-using-with,
+#  unspecified-encoding
 
 
 [MESSAGES CONTROL]
