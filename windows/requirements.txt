@@ -1,0 +1,7 @@
+# common and Tkinter
+pip
+# kivy variant
+kivy
+# wxPython variant
+wxPython
+# GTK not available for native Microsoft Windows

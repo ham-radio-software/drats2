@@ -1,0 +1,8 @@
+feedparser
+geopy
+pip
+Pillow
+pyaudio
+pydub
+pycountry
+pyserial

@@ -12,6 +12,8 @@ to date.
 Developers and even testers are strongly encouraged to add detail about
 what they need for their environment.
 
+See the developer_notes.txt file for more information.
+
 ## Security warning
 
 Do not use the root or an Administrator account for developing or running
@@ -317,9 +319,9 @@ manage it.
 
 * Code Spell Checker from Street Side Software
 * markdownlint from David Anson
-* Python from Microsoft
+* Python from Microsoft (Brings in some more extensions)
 * ShellCheck from Timon Wong
-
+* YAML from Red Hat
 
 [1]: https://github.com/ham-radio-software/lzhuf
 [2]: https://github.com/ham-radio-software/D-Rats/wiki/010.020-Installation-of-D%E2%80%90Rats-on-Microsoft-Windows-with-MobaXterm
