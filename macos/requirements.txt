@@ -1,0 +1,11 @@
+# Minimum requirements for macOS
+pip
+
+# Kivy
+kivy
+
+#wxpilot
+wxpython
+
+# gtk
+pygobject
