@@ -276,7 +276,7 @@ docker container and linting programs.
 To be determined. The ambition would be to have drats available as an installable package.
 
 ### Developing drats2 on MacOS
-Possible enviroment to develop drats on MacOS:
+Possible environment to develop drats on MacOS:
 * Visual Studio Code, with extensions:
   * Github Pull requests
 * Python3 installed via brew
