@@ -272,7 +272,17 @@ docker container and linting programs.
 
 ## MacOS specific information
 
-Need input from MacOS developers and users.
+### Running drats2 on MacOS
+To be determined. The ambition would be to have drats available as an installable package.
+
+### Developing drats2 on MacOS
+Possible enviroment to develop drats on MacOS:
+* Visual Studio Code, with extensions:
+  * Github Pull requests
+* Python3 installed via brew
+
+* virtual environment created by Visual Studio Code using
+  *   macos\requirements.txt
 
 ## Android specific information
 
