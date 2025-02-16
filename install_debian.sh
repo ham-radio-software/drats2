@@ -29,6 +29,7 @@ sudo -S -E apt-get --assume-yes install \
     python3-pydub \
     python3-serial \
     python3-tk \
+    python3-toml \
     wxpython-tools
 
 if [[ "${1:-}" == dev* ]]; then

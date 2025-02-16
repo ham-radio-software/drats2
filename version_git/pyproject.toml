@@ -3,18 +3,18 @@ requires = ["setuptools>=61"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "drats_gtk"
+name = "version_git"
 dynamic = ["version"]
-description = "Drats client using GTk"
+description = "Program Version from Git Describe"
 readme = "README.md"
 license = {file = 'LICENSE'}
 classifiers = [
     "License :: OSI Approved :: GPL-3.0-only"
 ]
 
+keywords = ["version", "git"]
+
 authors = [
-  {name = "Dan Smith KK7DS", email = "dsmith@danplanet.com"},
-  {name = "Maurizio Andreotti IZ2LXI", email = "maurizioandreottilc@gmail.com"},
   {name = "John E. Malmberg WB8TYW", email = "wb8tyw@qsl.net"}
 ]
 
@@ -30,8 +30,8 @@ Issues = "https://github.com/ham-radio-software/drats2/issues"
 Documentation = "https://github.com/ham-radio-software/drats2/wiki"
 
 [tool.towncrier]
-package = 'drats_gtk'
+package = 'version_git'
 package_dir = 'src'
 
 [tool.setuptools.dynamic]
-version = {attr = "setup_version.SETUP_VERSION"}
+version = {attr = "version_git.__version__"}

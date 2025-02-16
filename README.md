@@ -60,6 +60,14 @@ is that D-Rats depends on lots of additional packages, and a lot of them
 will be getting updates.  We probably do not have the cycles to track all
 of these changes to get updates out in a timely matter.
 
+## Installation warnings
+
+### Do not try to use setup.py to install packages
+
+The use of setup.py to install python packages is deprecated.
+Setup.py may be used in the packaging creation process if present.
+<https://packaging.python.org/en/latest/discussions/setup-py-deprecated/>
+
 ## Repository Structure
 
 This repository is setup as a "multi-package" repository.  Some of the
@@ -70,7 +78,8 @@ multiple packages that do a single function, but may be dependent
 on other packages.
 
 Each directory that is used for a Python package will have a pyproject.toml
-for building a pip installable module.
+for building a pip installable module.  This module will also provide the
+data for populating most of the about dialog.
 
 The base directory for a package directory may not be the same as the actual
 package name that is created.
@@ -119,10 +128,16 @@ the code to use the supported APIs.
 
 ### drats_kivy
 
-This is code specific to the Kivi coding.  Kivi can provide support
+This is code specific to the Kivy coding.  Kivy can provide support
 for an android port, which has been desired.
 
 Building an android project on Kivy has some challenges to set up.
+
+### drats_text
+
+This is for plain-text and "ANSI" terminals.  The reasons for this
+module is to assist in automated testing of D-Rats modules that is
+harder to do with GUI clients.
 
 ### drats_tk
 
@@ -151,6 +166,21 @@ setup a Python program as a Microsoft Windows Service.
 For MacOS, the ratflector should be runnable, but at least at first, it will
 not be setup as a service.  Todo: Need to determine how to setup a Python
 program as a MacOS service.
+
+### version_git
+
+This is a module designed for eventual standalone use.  Its primary function
+is to do its best to find out the version of the program that calls it.
+
+It also reads in the pyproject.toml file to get the information for filling
+out most of the "about" dialog boxes.
+
+Once it determines a version, it writes it into the setup_python.py in
+the target package source directory for use in package building.
+
+Potential bug: This module has to be able to deal with not having permission
+to write to the source directory, as would be the case when the calling
+module was installed from a package.
 
 ### tests
 
@@ -209,6 +239,46 @@ for you and also upload it for others.
 * 2 serial ports and a Null Modem cable to connect them.
 * A system that can run Docker or Podman.
 
+## special setup_version.py file
+
+This file will be in the "src/<package_name>".  It is generated / updated
+from running a test of the primary module in for that package.  This
+module should be updated in git with pull requests so that when someone
+tries to run from a downloaded tarball, they will get the version number
+to display.
+
+## Building Python Packages
+
+The setup_version.py file needs to be present and up to date before
+running the packaging scripts.
+
+For an actual release, a Python compatible version tag needs to be created
+in git for that release.  That tag will be used for the checkout.
+
+If you do a test build of python packages, it will modify the NEWS.rst
+module in every package directory.  It will also clear out the newsfragments
+directory of fragments.   After a test build you will need to reset these
+files back to what they were before.
+
+After a real package build, a pull request is needed to commit the updated
+news.RST files and newsfragments directories.  No other pull requests should
+should be merged until this pull request merged.
+
+The packaging script needs a bash shell to run and will create a python
+virtual environment.  There is one script that will build all the packages,
+and it calls a script that will build just one package.
+
+~~~bash
+# Build all packages
+./build_python_packages.sh
+
+# Build a single package
+./build_python_package.sh drats_gtk
+~~~
+
+The next step after building python compatible packages is to figure out
+how to build platform specific packages.
+
 ## Linux specific information
 
 This will include Linux emulation on Windows platforms.
@@ -225,7 +295,7 @@ You will need to install the development packages for your distribution.
 Eventually install scripts will be provided for the versions being tested.
 
 Visual Studio code claims to also support being able to setup a
-Python virtual environment for it to more safely evaluate pip
+Python virtual environment for it to more safely use pip
 installed modules.
 
 ## Microsoft Windows specific information
@@ -273,16 +343,20 @@ docker container and linting programs.
 ## MacOS specific information
 
 ### Running drats2 on MacOS
-To be determined. The ambition would be to have drats available as an installable package.
+
+To be determined. The ambition would be to have drats available as an
+installable package.
 
 ### Developing drats2 on MacOS
+
 Possible environment to develop drats on MacOS:
+
 * Visual Studio Code, with extensions:
   * Github Pull requests
 * Python3 installed via brew
 
 * virtual environment created by Visual Studio Code using
-  *   macos\requirements.txt
+  * macos\requirements.txt
 
 ## Android specific information
 
