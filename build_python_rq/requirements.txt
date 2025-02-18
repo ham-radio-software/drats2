@@ -1,0 +1,8 @@
+# Needed for package building
+build
+pip
+setuptools
+Sphinx
+towncrier
+virtualenv
+wheel
