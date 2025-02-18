@@ -1,0 +1,38 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "drats_wx"
+dynamic = ["version"]
+description = "Drats client using WxPython"
+readme = "README.md"
+license = {file = 'LICENSE'}
+classifiers = [
+    "License :: OSI Approved :: GPL-3.0-only"
+]
+
+authors = [
+  {name = "Dan Smith KK7DS", email = "dsmith@danplanet.com"},
+  {name = "Maurizio Andreotti IZ2LXI", email = "maurizioandreottilc@gmail.com"},
+  {name = "John E. Malmberg WB8TYW", email = "wb8tyw@qsl.net"}
+]
+
+maintainers = [
+  {name = "Maurizio Andreotti IZ2LXI", email = "maurizioandreottilc@gmail.com"},
+  {name = "John E. Malmberg WB8TYW", email = "wb8tyw@qsl.net"}
+]
+
+[project.urls]
+Homepage = "https://groups.io/g/d-rats"
+Repository = "https://github.com/ham-radio-software/drats2"
+Issues = "https://github.com/ham-radio-software/drats2/issues"
+Documentation = "https://github.com/ham-radio-software/drats2/wiki"
+
+
+[tool.towncrier]
+package = 'drats_wx'
+package_dir = 'src'
+
+[tool.setuptools.dynamic]
+version = {attr = "setup_version.SETUP_VERSION"}

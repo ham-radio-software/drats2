@@ -3,9 +3,9 @@ requires = ["setuptools>=61"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "drats_gtk"
+name = "drats_text"
 dynamic = ["version"]
-description = "Drats client using GTk"
+description = "Drats client for text terminal"
 readme = "README.md"
 license = {file = 'LICENSE'}
 classifiers = [
@@ -30,7 +30,7 @@ Issues = "https://github.com/ham-radio-software/drats2/issues"
 Documentation = "https://github.com/ham-radio-software/drats2/wiki"
 
 [tool.towncrier]
-package = 'drats_gtk'
+package = 'drats_text'
 package_dir = 'src'
 
 [tool.setuptools.dynamic]

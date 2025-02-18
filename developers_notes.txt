@@ -4,6 +4,8 @@ into a Wiki.
 When adding to this, please use your call sign indicates content that is
 unique to your development.
 
+This section written by wb8tyw.
+
 Development on Windows is new to wb8tyw as is these new GUI tool kits.
 
 The idea for this file is to collect information as it happens so that it
@@ -468,3 +470,241 @@ Results of Tkinter tests: Success on all of the above systems.
 Results of the WxPython tests:  Success on all the above systems, with a
 a diagnostic on MobaXterm run.   A web search indicates that diagnostic can be
 fixed with a series of commands.
+
+
+Python packaging:
+https://packaging.python.org/en/latest/
+https://packaging.python.org/en/latest/tutorials/packaging-projects/
+https://docs.python-guide.org/
+
+It looks like we need a src subdirectory for each project for them to be
+packaged.
+
+Each module that could be reused by other projects should be in its own
+package.
+
+We do not want to be duplicating code either.
+
+Now every program needs a help/about window with the program version and
+other information.
+
+We do not want to be editing a version file, we want to use git-tags
+where they are available.  The fun comes from when we just download a
+tarball from git, and that tarball does not contain the git metadata.
+
+So what we will do is setup a version_git package based on the version.py
+module from from the D-Rats repository.   All this module will do is
+parse handle parsing the git version.   This will be created as a generic
+package so it may be used by other projects.
+
+A tag of '0.0.0dev0' was created for testing the module.
+
+The plan is for the version_git.py program to be run for each commit and
+update a file which will be included with the commit.  This will allow
+git tarball installs to work.
+
+This new directory layout will require using PYTHONPATH for testing.
+
+On Microsoft Windows Powershell variables of interest are below.  most
+can be accessed from a command window by putting them using %name%.
+In general for use, the variables are case insensitive, but a python lookup
+to read their values may need to be in exact case.
+
+* $Env:PYTHONPATH - Where python searches for modules, usually colon
+                    delimiter.
+* $Env:APPDATA - This is where a program should store data that may
+                 be replicated to other computers.
+* $Env:COMPUTERNAME - your computer's name.
+* $Env:HOMEPATH - Your home path
+* $env:LANG - default locale language like en_US.UTF-8
+* $env:LOCALAPPDATA - This is where a program should store data that is
+                      local to this system
+* $env:OneDrive - Microsoft OneDrive mirrored directory, even if this
+                  environment variable exists, it does not mean the
+                  directory is setup to be usable.
+* $Env:OS - Reports "Windows_NT" on Windows 11
+* $Env:Path - Paths to search for executables delimited by semicolons
+* $Env:PATHEXT - Semicolon separated list of "executable" extensions
+* $Env:TMP - local user temporary files.
+* $Env:TEMP - Usually the same as $ENV.TMP
+* $Env:USERNAME - Your login name
+* $Env:PUBLIC - A public directory, typically $Env:SystemDrive\Users\public
+
+A bash script may need to be able to detect what platform it is to handle
+the differences between such platforms.
+
+For a Linux environment, the first thing to do is see if the file
+"/etc/os-release" exists, and if it does exist, source it.
+
+The MobaXterm environment does not have an /etc/os-release file.
+
+This bash code shows how to collect the data.
+
+: "${NAME:=}"
+: "${ID:=}"
+: "${ID_LIKE:=}"               # Seen on Ubuntu, not on fedora.
+: "${VERSION_ID:=}"           # Not on Msys2
+: "${COMPUTERNAME:=}"         # Only present on Linux emulation on Windows.
+: "${MSYSTEM:=}"              # Only present on Msys2
+: "${MOBASTARTUPDIR:=}"  # Only seen on MobaXterm
+if [ -e /etc/os-release ]; then
+    # shellcheck disable=SC1091
+    source /etc/os-release
+fi
+
+MobaXterm and cygwin both have "/cygdrive" directories.
+
+We can not detect linux running under Windows Subsystem for Linux (WSL) and
+it is possible for multiple linux environments to be running.
+
+Powershell getting current directory for a script.
+
+$my_dir = Get-Location()
+$my_dir.ToString()
+
+To fully test the new D-Rats we will need a more complex PYTHONPATH,
+which we will have to hide from the end user in some way for the final
+program.
+
+Powershell test of version_git module.
+
+$Env:PYTHONPATH=".\version_git\src\"
+python -m version
+
+Next is to try making a package out of it.
+Previously I used setuptools for D-Rats and had some issue.
+The python example for packaging defaults to using hatchling, which is
+said to be simpler.
+
+It looks like we are going to have multiple pyproject.toml files with
+almost identical content.
+
+We are going to need a script to make sure that they are properly maintained.
+
+There are various ways to install hatchling, but it looks like the most
+universal is to use PIP with PyPi.   This is the same as with PIP.
+
+So this will need a virtual environment.   I have a common directory to
+multiple environments, so I will need to create a virtual environment for
+each system and environment.  A single Microsoft Windows host may have
+multiple virtual environments.
+
+As I recall, in some cases I can not run programs from a network hosted
+virtual env on some windows environments.  I think the problem showed up
+msys2 on windows 7.  For that I had to create the virtual environment in
+the home directory.
+
+For windows-11 native:
+https://docs.python.org/3/library/venv/html
+
+Network storage seems to work for a virtual environment on native Microsoft
+windows.
+
+python -m venv .\"$Env:COMPUTERNAME"_WIN_build_env --upgrade-deps
+This seems to be take quite a while to run.
+
+This was the only way I could find to activate it was to issue a 'cmd'
+command first
+
+cmd
+
+This seems to have launched or changed a command window in Visual Studio Code
+In that I could run:
+
+.\"$Env:COMPUTERNAME"_build_env\scripts\activate.bat
+
+The other way required installing the full python from the python.org site
+instead of installing the Windows Store python which is more limited.
+
+This would mean that I would be testing in a different environment than
+the end users would likely be using.
+
+In the cmd window:
+
+pip install -U -r build\requirements.txt ^
+    --no-warn-script-location
+
+This also installed a bunch of stuff.
+And took a few minutes.
+
+Following https://hatch/pypa.io/latest/intro/ for these steps
+
+Apparently this is an interactive quiz to setup the directory for
+hatch to package.
+
+cd version_git
+hatch new --init
+
+This asked some questions about what I had in the pyproject.toml file and
+then it wrote that it updated that file.   Editor showed no changes.
+
+Next is understanding dynamic versioning.
+
+The dynamic versioning is from reading a file containing the line:
+   __version__ = "x.y.z"
+
+So it is like original d-rats project, we have to run a script to prepare
+the repository for a package build before doing a build.   This is needed
+to create the message catalogs, run towncrier to create the News.RST file.
+
+We have to run a script to create that file.
+Just like we will have to run a script to build the message catalogs
+
+Hatch turns out to not being a savings.   Need to go back to setuptools which
+we understand better.
+
+For setuptools, the first thing we need is to have towncrier build the
+changelog.
+
+Towncrier needs a newsfragments subdirectory for input and also will modify
+a NEWS.rst file.  The documentation is a bit unclear from first showing a
+non-default changes directory and then switching to using the term
+newsfragments.
+
+New self documentation standard quick reference:
+
+https://mypy.readthedocs.io/en/stable/cheat_sheet_py3.html
+
+Getting packages to build was a bit of a struggle.
+
+Finally found out how to get the license name in the pyproject.toml file as
+all the online documentation was out of date.
+
+Then the next battle was getting a test program to be able to call the
+version_git program and get the data for the version and the about box.
+
+And then getting the package built with the correct version with
+towncrier.
+
+And Kivy required a change on how logging was setup.  Kivy creates its
+own Logger object that needs to be used.  So that means that we have to
+pass that logger to all classes that need to do their logging, and setup
+a wrapper methods to the logger in the class to make sure that the messages
+end up formatted correctly.
+
+So at this point we can build python packages.
+
+This is still the boring boiler plate stuff before we can actually start
+working on real code.
+
+The next steps needed for packaging are, not necessarily in order are:
+
+* Create about dialog boxes to for the GUI packages.
+
+* Create platform specific packages.
+
+* Github actions for creating python and platform specific packages.
+
+* Start creating Android APK files.
+
+* Investigate using Pydoc for generating documentation.
+
+* Make sure that getenv and Internationalization works.
+
+All of that is still boilerplate stuff.
+
+The Pydoc seems the most important to get working next before implementing
+as so that we are not back tracking.
+
+The internationalization is also important to get working early, and then
+the about dialogs.

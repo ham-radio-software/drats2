@@ -1,0 +1,8 @@
+Metadata-Version: 1.0
+Name: version_git
+Version: 0.0.0.dev0
+Summary: Program Version from Git Describe
+Home-page: https://groups.io/g/d-rats
+Author: John E. Malmberg WB8TYW
+License: GPL-3.0-only
+Description: Program Version from Git Describe

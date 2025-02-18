@@ -17,7 +17,8 @@ disable = wrong-import-position, c-extension-no-member, bad-option-value
 
 [TYPECHECK]
 # Needed GTK+: pack_start window
-generated-members = pack_start, window
+# Needed WxPython: Frame
+generated-members = pack_start, window, Frame
 ignored-modules = gi.repository
 ignored-classes = gi.repository
 
