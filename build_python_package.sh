@@ -47,7 +47,7 @@ fi
 # shellcheck disable=SC1091
 source "$environment_name/bin/activate"
 
-pip install -U -r build/requirements.txt --no-warn-script-location
+pip install -U -r build_python_rq/requirements.txt --no-warn-script-location
 
 : "${PYTHONPATH:=}"
 PYTHONPATH="${PWD}/version_git/src/version_git:${PYTHONPATH}"
