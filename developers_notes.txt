@@ -708,3 +708,92 @@ as so that we are not back tracking.
 
 The internationalization is also important to get working early, and then
 the about dialogs.
+
+Feb 22, 2025
+
+Tried to build packages on MobaXterm and Msys2.  Minor changes got it working
+on MobaXterm.  Msys2 is not able to build packages and I will leave that
+for someone else to investigate.
+
+Looked at pydoc, and while it is built into Python, it does not have the
+features that sphinx has.
+
+https://www.sphinx-doc.org/en/master/tutorial/getting-started.html
+
+MobaXterm has Python sphinx installed as part of the setup, so that should
+allow Microsoft
+
+And this adds something more to be updated when the version changes.
+
+Notice that these directories have a lot of duplication in them.
+
+Some python developers have "cookiecutter" programs that do almost all the
+boiler plate for the directories.
+
+So first we use the quick-start to setup the templates in each directory.
+
+Then at some point we will update the script to build the documentation to
+make sure that the version and information from the pyproject.toml is used
+is used.
+
+~~~bash
+sphinx-quickstart docs
+Welcome to the Sphinx 4.4.0 quickstart utility.
+
+Please enter values for the following settings (just press Enter to
+accept a default value, if one is given in brackets).
+
+Selected root path: docs
+
+You have two options for placing the build directory for Sphinx output.
+Either, you use a directory "_build" within the root path, or you separate
+"source" and "build" directories within the root path.
+> Separate source and build directories (y/n) [n]: y
+
+The project name will occur in several places in the built documentation.
+> Project name: D-Rats Common Modules
+> Author name(s): Dan Smith KK7DS, Maurizio Andreotti IZ2LXI, Maurizio
+Andreotti IZ2LXI
+> Project release []: 0.0.0.dev0
+
+If the documents are to be written in a language other than English,
+you can select a language here by its language code. Sphinx will then
+translate text that it generates into that language.
+
+For a list of supported codes, see
+https://www.sphinx-doc.org/en/master/usage/configuration.html#confval-language.
+> Project language [en]:
+
+Creating file /drives/w/work/d-rats/drats2/common/docs/source/conf.py.
+Creating file /drives/w/work/d-rats/drats2/common/docs/source/index.rst.
+Creating file /drives/w/work/d-rats/drats2/common/docs/Makefile.
+Creating file /drives/w/work/d-rats/drats2/common/docs/make.bat.
+
+Finished: An initial directory structure has been created.
+
+You should now populate your master file /drives/w/work/d-rats/drats2/common/
+docs/source/index.rst and create other documentation
+source files. Use the Makefile to build the docs, like so:
+   make builder
+where "builder" is one of the supported builders, e.g. html, latex or linkcheck.
+~~~
+
+The make command is not working on MobaXterm, but apparently it is not
+needed to when using the Sphinx.
+
+Now that I have a a generated template, I copied the doc directory to the
+version_git package.   Then it took a while to get it working.
+
+Only the VersionGit module currently has any documentation to generate.
+
+As the generation requires that the setup_version.py is already generated
+and can require setting a python path and using a virtual
+environment, I added it at part of the script for building the the
+python packages, and made building the packages to be optional.
+
+The generated documentation can be looked at on a local system with
+file:/// type URL.
+
+As each module gets ready for documentation to be generated an entry in
+the docs/source/index.rst will need to be made and a base document will
+need to be created like the for the version_git module.

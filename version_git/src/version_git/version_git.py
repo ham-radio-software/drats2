@@ -7,10 +7,6 @@ python expectations.
 PEP-440 specifies: [N!]N(.N)*[{a|b|rc}N][.postN][.devN] for a version format.
 This module does not support epoch [N!] portion.
 '''
-#
-# Copyright 2009 Dan Smith <dsmith@danplanet.com>
-# minor mods 2015-2020 by Maurizio Andreotti iz2lxi
-#                         <maurizioandreottilc@gmail.com>
 # Copyright 2021-2025 John. E. Malmberg - Python3 Conversion
 #
 # This module contains the d-rats version variables
@@ -78,7 +74,15 @@ if __name__ == "__main__":
 
 
 class VersionGit:
-    '''Version from Git.'''
+    '''
+    Version from Git and pyproject.toml.
+
+    :param project_path: Path to project, default is directory name
+                         of this module.
+    :type project_path: str
+    :param logger: logger object to inherit, default is None.
+    :type logger: :class:`logging.Logger`
+    '''
 
     VERSION_NUM_DEFAULT = "0.0.0dev0+unknown"
     _version_re = re.compile('^Version: (.+)$', re.M)
@@ -113,6 +117,13 @@ class VersionGit:
 
         Searches a path for a file name.  The default path
         is the filename for this module.
+
+        :param name: File name to find
+        :type name: str
+        :param start_path: Path to search, the default is is the path
+                           of this module.
+        :returns: Path found or None.
+        :rtype: str
         '''
         if not start_path:
             start_path = dirname(__file__)
@@ -214,6 +225,20 @@ class VersionGit:
     def project_info(self) -> dict:
         '''
         :returns: A dictionary of program information
+        :rtype: dict
+
+        Dictionary keys returned:
+
+        :name: Project name from pyproject.toml
+        :full_version: The full version as calculated by this module
+        :description: Description from the pyproject.toml
+        :authors: String of author names from pyproject.toml
+        :maintainers: String of maintainer names from pyproject.toml
+        :license: Standard license name from the pyproject.toml
+        :Homepage: Optional project homepage URL
+        :Repository: Optional project source code URL
+        :Issues: Optional project URL to report issues
+        :Documentation: Optional project URL documentation
         '''
         self._get_project_info()
         return self._project_info
@@ -222,6 +247,10 @@ class VersionGit:
     def toml(self) -> dict:
         '''
         :returns: A dictionary of information collected from pyproject.toml
+        :rtype: dict
+
+        The dictionary structure will vary with the contents parsed from
+        the pyproject.toml file.
         '''
         self._get_toml_data()
         return self._toml
@@ -300,7 +329,10 @@ class VersionGit:
 
     @property
     def full_version(self):
-        '''Full version for display in the program.'''
+        '''
+        :returns: Full version for display in the program
+        :rtype: str
+        '''
         if not self._full_version:
             self._get_full_version()
         return self._full_version
