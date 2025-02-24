@@ -18,17 +18,29 @@ pacman -Syu --noconfirm \
     "${mingw}-python-pycountry" \
     "${mingw}-wxPython"
 
+if [ ! -e /usr/bin/python ]; then
+    ln -s /mingw64/bin/python /usr/bin/python
+fi
+
+if [ ! -e /usr/bin/python3 ]; then
+    ln -s /mingw64/bin/python3 /usr/bin/python3
+fi
+
 if [[ "${1:-}" == dev* ]]; then
   # packaging
   # no aspell-it dictionary at this time.
   pacman -Syu --noconfirm \
+    git \
     "${mingw}-gcc" \
     "${mingw}-make" \
     "${mingw}-python-codespell" \
+    "${mingw}-python-pip" \
     "${mingw}-python-pylint" \
     "${mingw}-python-setuptools" \
     "${mingw}-python-virtualenv"
 
     # This should not be needed, but is for now.
-    ln -sf /mingw64/bin/mingw32-make.exe /mingw64/bin/make.exe
+    if [ ! -e /mingw64/bin/make.exe ]; then
+        ln -sf /mingw64/bin/mingw32-make.exe /mingw64/bin/make.exe
+    fi
 fi
