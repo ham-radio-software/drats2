@@ -40,6 +40,7 @@ if [[ "${1:-}" == dev* ]]; then
     make \
     pkg-config \
     pylint \
+    python3-babel \
     python3-dev \
     python3-ipykernel \
     python3-pip \

@@ -109,10 +109,12 @@ We will want to run as many unit tests as we can for quality control.
 * creating Python and Operating system specific packages.
 * Bandit security scanning.
 
-### Common
+### drats_common
 
-This is code specific to D-Rats that is common to both the d-rats
-repeater and other d-rats programs.
+This is code specific to D-Rats that is common to both the D-Rats
+repeater and other D-Rats programs.
+
+This also contains the message catalogs for all the D-Rats programs.
 
 ### drats_gtk
 
@@ -247,6 +249,36 @@ module should be updated in git with pull requests so that when someone
 tries to run from a downloaded tarball, they will get the version number
 to display.
 
+## Internationalization support
+
+For unique sentences, the standard "_()" will be used, but the text
+will be in upper case English.   These are intended to be message tags.
+
+For words that are commonly reused, it is planned that one or more python
+modules will be made to contain a method of returning a translated string
+with some caching to avoid duplicate translated lookups.  This is similar
+to how Java handles strings ae resources.
+
+Currently the script has only been tested on Linux.
+
+The script build_python_locale.sh builds a new drats.pot file each time
+it is run, so we don't need to store that file in the repository.
+
+That script will update all the po files into the
+drats_common/src/drats_common/locale directory with current changes.
+
+For new translations, online translators can be used, but these should be
+followed up by users that actually know the languages.
+
+These po files will need to be manually edited.  The updated po files
+will need to be checked into the git repository.
+
+After updating the po files, the script needs to be run again to update
+the .mo files.  We will need to save the .mo files into the repository.
+
+It has not yet been tested to see if the python packaging needs to be
+modified to store the message catalogs.
+
 ## Building Python Packages
 
 The setup_version.py file needs to be present and up to date before
@@ -269,6 +301,9 @@ virtual environment.  There is one script that will build all the packages,
 and it calls a script that will build just one package.
 
 ~~~bash
+# Build or update the po files.
+./build_python_locale.sh
+
 # Build all packages
 ./build_python_packages.sh
 

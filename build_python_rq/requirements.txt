@@ -1,4 +1,5 @@
 # Needed for package building
+babel
 build
 pip
 setuptools

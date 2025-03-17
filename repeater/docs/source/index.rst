@@ -10,7 +10,7 @@ Welcome to D-Rats Repeater Modules' documentation!
    :maxdepth: 2
    :caption: Contents:
 
-
+   repeater_configure
 
 Indices and tables
 ==================

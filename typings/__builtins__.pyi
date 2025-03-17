@@ -1,0 +1,3 @@
+# This is a a file to help pylance/pyright with dynamic builtins
+# that pylance does not know about.
+def _(message:str, /)->str: ...

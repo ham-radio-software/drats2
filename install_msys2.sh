@@ -33,6 +33,7 @@ if [[ "${1:-}" == dev* ]]; then
     git \
     "${mingw}-gcc" \
     "${mingw}-make" \
+    "${mingw}-python-babel" \
     "${mingw}-python-codespell" \
     "${mingw}-python-pip" \
     "${mingw}-python-pylint" \
