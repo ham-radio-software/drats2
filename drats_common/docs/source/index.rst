@@ -10,7 +10,8 @@ Welcome to D-Rats Common Modules' documentation!
    :maxdepth: 2
    :caption: Contents:
 
-
+   common_args
+   language
 
 Indices and tables
 ==================

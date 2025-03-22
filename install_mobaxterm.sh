@@ -58,3 +58,8 @@ ls "$pypi_dir/bin"
   -r "${my_dir}/mobaxterm/requirements.txt"
 #
 # kivy does not apparently install on cygwin/MobaXterm
+
+if [[ "${1:-}" == dev* ]]; then
+    apt-get -y install \
+        "${pyver}-babel"
+fi

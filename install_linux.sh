@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# if $1 starts with "dev" then install additional packages for
+# developer.
+
 set -uex
 
 my_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &> /dev/null && pwd)"
@@ -33,17 +36,17 @@ fi
 # mobaxterm has python3.9 and python39-wx package, no gtk4, no kivy
 case "$ID" in
     mobaxterm)
-        "${my_dir}/install_mobaxterm.sh"
+        "${my_dir}/install_mobaxterm.sh" "$@"
         ;;
     msys2)
-        "${my_dir}/install_msys2.sh"
+        "${my_dir}/install_msys2.sh" "$@"
         ;;
     fedora)
         # Rocky/Alma is probably similar to this
-        "${my_dir}/install_fedora.sh"
+        "${my_dir}/install_fedora.sh"  "$@"
         ;;
     debian|ubuntu)
-        "${my_dir}/install_debian.sh"
+        "${my_dir}/install_debian.sh"  "$@"
         ;;
     *)
         echo "$ID is not yet supported by this script."

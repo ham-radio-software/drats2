@@ -17,7 +17,7 @@
 # You should have received a copy of the GNU General Public License
 
 from os import system
-from os.path import dirname, join
+from os.path import join
 from glob import glob
 from subprocess import check_output
 import sys
@@ -44,11 +44,12 @@ def default_build():
         file_gz_full = join('src', project, file_gz)
         system(f"gzip -c {file_name_full} > {file_gz_full}")
 
-    glob_path = join('src', project, 'locale', '*', 'LC_MESSAGES', '*.po')
-    locale_po_files = glob(glob_path)
-    for file_name in locale_po_files:
-        locale_dir = dirname(file_name)
-        command = f"msgfmt -o {locale_dir}/D-RATS.mo {locale_dir}/D-RATS"
-        system(command)
+# Something different needs to be done here for packaging.
+#    glob_path = join('src', project, 'locale', '*', 'LC_MESSAGES', '*.po')
+#    locale_po_files = glob(glob_path)
+#    for file_name in locale_po_files:
+#        locale_dir = dirname(file_name)
+#        command = f"pybabel -o {locale_dir}/D-RATS.mo {locale_dir}/D-RATS"
+#        system(command)
 
 default_build()

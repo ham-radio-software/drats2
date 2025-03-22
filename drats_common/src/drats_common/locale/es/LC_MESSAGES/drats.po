@@ -1,0 +1,39 @@
+# Spanish translations for D-Rats.
+# Copyright (C) 2025 See COPYING file
+# This file is distributed under the same license as the D-Rats project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: D-Rats VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2025-03-16 15:30-0500\n"
+"PO-Revision-Date: 2025-03-16 14:32-0500\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: es\n"
+"Language-Team: es <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.10.3\n"
+
+#: /home/malmberg/work/d-rats/drats2/drats_common/src/drats_common/common_args.py:77
+msgid "CONFIGURATION DIRECTORY"
+msgstr "Directorio de configuración"
+
+#: /home/malmberg/work/d-rats/drats2/drats_common/src/drats_common/common_args.py:85
+msgid "LOG LEVEL FOR DISPLAYED MESSAGES"
+msgstr "Nivel de registro para mensajes mostrados"
+
+#: /home/malmberg/work/d-rats/drats2/drats_common/src/drats_common/common_args.py:91
+msgid "LOG DIRECTORY"
+msgstr "Directorio de registros"
+
+#: /home/malmberg/work/d-rats/drats2/drats_common/src/drats_common/common_args.py:95
+msgid "SHOW VERSION"
+msgstr "Mostrar versión"
+
+#: /home/malmberg/work/d-rats/drats2/repeater/src/drats_repeater/repeater_configure.py:96
+msgid "DRATS REPEATER CONFIGURE"
+msgstr "D-Rats Configuración del repetidor"

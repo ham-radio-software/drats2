@@ -17,3 +17,8 @@ winget install python
 # Install required packages for windows
 pip install -U -r $scriptDirectory\windows\requirements.txt `
     --no-warn-script-location
+
+if ($null -ne $development) {
+    pip install -U -r $scriptDirectory\windows\development\requirements.txt `
+        --no-warn-script-location
+}

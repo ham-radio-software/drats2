@@ -797,3 +797,103 @@ file:/// type URL.
 As each module gets ready for documentation to be generated an entry in
 the docs/source/index.rst will need to be made and a base document will
 need to be created like the for the version_git module.
+
+March 9, 2025 update from WB8TYW.
+
+Now looking at what it takes to get a Ratflector running, as it seems like
+specifically working on the boilerplate for a generic project does not seem
+to be making visible progress.
+
+A ratflector needs to be designed to run as a service in the background.
+And optionally have a way to query it from a controlling program.
+
+There are two types of linux services, System-D, and an older style.
+
+We also sometimes want to run a ratflector interactively and the older D-Rats
+client has a currently non-functional option to launch a ratflector.
+
+While the ratflector runs in the background, it is nice to be able to
+monitoring it and control it.   There are two good ways to do that through
+an HTTPS interface.  One is a web page, and the other is a REST interface.
+This needs to be protected against it accidentally exposed to the public
+internet.  This remote control will be worked on separately.
+
+But the first thing we want for a Ratflector is a way to generate and
+validate the configuration file.  On Linux systems, this is typically edited
+by a text editor, but some utilities provide similar tools.
+
+So am starting with a repeater_configure.py script to validate the
+configuration.  It will need to read and translate older configuration files
+and generate new configuration files.
+
+We need new configuration files because we need more accurate information
+about the the communication links which were usually referred to as radios.
+One of the weakness of the older configuration files is that it is possible
+to use the configuration GUI to corrupt the file.
+
+The first thing that I notice is that there is a lot of duplicated code for
+processing command line arguments.  So this means creating a common routine
+for that.  And that seems to be the time to start adding in
+internationalization
+
+Internationalization works by setting up the messages so that they can be
+found from scanning the source code and then at run time those messages
+are replaced.
+
+Python packaging does not have automatic support for internationalization,
+we will need to support that our self.
+
+For python, this is done by wrapping the texts with a function named "_"
+which can be found from scans and also does the substitution.
+
+Because of this type of replacement has overhead, we want to take as much
+care as we can that we are not duplicating strings.
+
+Android Java does something a bit different.  For that, you don't use string
+constants in the code, all strings are in a resource file and for different
+languages a resource file is switched in.  This is more efficient, but can
+make the source code harder to read and maintain.
+
+We may want to consider making string constant python modules for common
+strings.
+
+Many times programmer's do not consider internationalization and just
+program in their native language, so do not learn the internationalization
+techniques.   For this reason, we will put most text that needs to be
+localized in upper case.
+
+Now finding exactly how to setup the internationalization inside of a python
+package is hard.  I could not find that in my searches.
+
+In querying a python forum, the answer I got is that was left for the
+team that converted a generic python package to a specific distribution
+specific package.
+
+I think I found a good solution.
+
+Next time I plan to work more on a program to setup the parameter files
+for the ratflector.
+
+Items needed for a Ratflector.
+
+1. Configuration data
+
+A system can have multiple ratflectors on it.
+
+   * for each repeater:
+     - network address: default 0.0.0.0
+     - network port: default 9000
+     - web address: default localhost
+     - web port: default network port + 10
+     - identification: default none - Normally call sign
+     - identification frequency 30 (assume minutes)
+     - Allow unlicense connections.
+     - Require authorization: default false
+     - Authorization type: to be determined
+     - Outgoing repeating enabled
+     - Trust localhost: Default true
+     - GPS data port default 9500.
+     - GPS data allowed default False
+     - Is repeater manually started or a service?
+
+May only be able to fully support repeaters as a service on Linux systems.
